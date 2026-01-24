@@ -2,7 +2,7 @@
 
 ## Quiz
 
-Total: 7.5 mins 
+Total: 11.05 mins 
 
 * [Multiplication Tables Quiz (5 mins) ](https://mohitdhami.github.io/Multiplication-Tables-Quiz/ )
 
