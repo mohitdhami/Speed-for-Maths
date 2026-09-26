@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Speed for Maths — ReAdvanced (Single App)</title>
+<meta name="description" content="ReAdvanced single-app version of Speed for Maths: Multiplication (12-30), Squares/Cubes/Powers of 2, and % ↔ Fraction conversions. 221 questions, 11.05 mins." />
+<style>
+:root{
+  --bg1:#6a11cb; --bg2:#2575fc;
+  --card:#ffffff; --ink:#1e2433; --muted:#68718a;
+  --line:#e7eaf3; --soft:#f4f6fb;
+  -- brand:#2575fc;
+  --accent:#6a11cb;
+  --green:#16a34a; --green-bg:#e7f7ee;
+  --red:#dc2626; --red-bg:#fdecec;
+  --amber:#d97706; --amber-bg:#fff4e0;
+  --radius:18px;
+  --shadow:0 12px 40px rgba(20,20,60,.22);
+}
+[data-theme="dark"]{
+  --card:#151b2e; --ink:#eef1ff; --muted:#9aa3c0;
+  --line:#263049; --soft:#1d2540;
+  --green-bg:#123524; --red-bg:#3a1620; --amber-bg:#3a2a12;
+  --shadow:0 12px 40px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,'Segoe UI',system-ui,-apple-system,sans-serif;
+  min-height:100vh;color:var(--ink);
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  background-attachment:fixed;padding:22px;
+  transition:background .3s;
+}
+a{color:inherit}
+.wrap{max-width:980px;margin:0 auto}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:16px;color:#fff;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  background:#fff;color:#4b1fc3;font-weight:900;font-size:22px;
+  box-shadow:0 6px 18px rgba(0,0,0,.25)
+}
+.brand h1{font-size:20px;letter-spacing:.2px}
+.brand p{font-size:12.5px;opacity:.9}
+.top-actions{display:flex;gap:8px}
+.pill-btn{
+  border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);
+  color:#fff;padding:9px 14px;border-radius:999px;cursor:pointer;font-size:13px;
+  backdrop-filter:blur(6px)
+}
+.pill-btn:hover{background:rgba(255,255,255,.28)}
+.card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:26px;
+  border:1px solid var(--line);
+}
+.screen{display:none}
+.screen.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hero{text-align:center;margin-bottom:18px}
+.hero h2{font-size:30px;margin-bottom:8px}
+.hero p{color:var(--muted);font-size:15px;line-height:1.6;max-width:680px;margin:0 auto}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.stat{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat b{font-size:22px;display:block}
+.stat span{font-size:12px;color:var(--muted)}
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px}
+.mode{
+  text-align:left;border:2px solid var(--line);border-radius:16px;
+  padding:18px;background:var(--card);cursor:pointer;transition:.18s;color:var(--ink)
+}
+.mode:hover{transform:translateY(-3px);border-color:#8aa6ff;box-shadow:0 10px 26px rgba(37,117,252,.18)}
+.mode.marathon{grid-column:1/-1;background:linear-gradient(135deg,#111c3a,#2b1a63);color:#fff;border-color:#ffffff33}
+[data-theme="light"] .mode.marathon{color:#fff}
+.mode h3{font-size:17px;margin-bottom:6px}
+.mode p{font-size:13.5px;color:var(--muted);line-height:1.5}
+.mode.marathon p{color:#d6d9ff}
+.mode .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line);color:var(--muted)}
+.mode.marathon .tag{background:#ffffff22;border-color:#ffffff44;color:#fff}
+.mode .go{margin-top:12px;font-weight:800;font-size:14px}
+.best-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.best{background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center;font-size:12px;color:var(--muted)}
+.best b{display:block;font-size:15px;color:var(--ink)}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.feat div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12.5px;color:var(--muted);line-height:1.5}
+.feat b{color:var(--ink);display:block;margin-bottom:4px;font-size:13px}
+/* setup */
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.field{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px}
+.field label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:10px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 13px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:700}
+.seg button.on{background:#2575fc;border-color:#2575fc;color:#fff}
+.btn{
+  background:linear-gradient(90deg,var(--accent),#2575fc);color:#fff;border:0;
+  padding:14px 26px;border-radius:999px;font-size:16px;font-weight:800;cursor:pointer;
+  transition:.18s;width:100%;margin-top:6px
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(37,117,252,.35)}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.small{font-size:13px;color:var(--muted);line-height:1.6}
+.back{background:none;border:0;color:var(--muted);cursor:pointer;font-size:13px;margin-bottom:10px}
+/* quiz */
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.hud .left{display:flex;gap:8px;align-items:center}
+.icon-btn{border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:13px}
+.total-timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:22px;padding:8px 16px;border-radius:12px;background:var(--soft);border:1px solid var(--line)}
+.total-timer.warn{background:var(--amber-bg);border-color:#f0b429;color:var(--amber)}
+.total-timer.danger{background:var(--red-bg);border-color:#f08a8a;color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.04)}}
+.qmeta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:8px 0}
+.pbar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.pbar>i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--accent),#2575fc);transition:width .1s linear}
+.qbar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin-bottom:14px;border:1px solid var(--line)}
+.qbar>i{display:block;height:100%;background:#22c55e;transition:width .1s linear}
+.question{font-size:30px;font-weight:900;text-align:center;margin:14px 0 6px}
+.qtag{text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.opt{
+  border:2px solid var(--line);background:var(--soft);color:var(--ink);
+  border-radius:14px;padding:16px;font-size:19px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;gap:10px;transition:.15s;text-align:left
+}
+.opt:hover{transform:translateY(-2px);border-color:#8aa6ff}
+.opt .key{font-size:11px;font-weight:900;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:3px 7px;color:var(--muted)}
+.opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.opt.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.opt:disabled{cursor:default;opacity:.95;transform:none}
+.feedback{min-height:22px;text-align:center;font-weight:700;font-size:14px;margin-top:4px}
+.feedback.ok{color:var(--green)} .feedback.no{color:var(--red)}
+.hint{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+/* results */
+.score-wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:30px;background:conic-gradient(#22c55e var(--p,0%),#e7eaf3 0);flex:0 0 auto}
+.ring>div{background:var(--card);width:118px;height:118px;border-radius:50%;display:grid;place-items:center;color:var(--ink)}
+.rgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.rbox{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.rbox b{font-size:20px;display:block} .rbox span{font-size:12px;color:var(--muted)}
+.review-tools{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.review{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.ritem{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.55}
+.ritem:last-child{border-bottom:0}
+.ritem .ok{color:var(--green);font-weight:800} .ritem .bad{color:var(--red);font-weight:800}
+/* learn */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tabs button{border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:9px 14px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:700}
+.tabs button.on{background:#111c3a;color:#fff;border-color:#111c3a}
+.learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:12px}
+.cell{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;font-size:13px}
+.cell b{display:block;font-size:14px}
+table.learn{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px}
+table.learn th,table.learn td{border:1px solid var(--line);padding:8px;text-align:center}
+table.learn th{background:var(--soft)}
+footer{text-align:center;color:#e8ecff;font-size:12px;margin-top:14px;opacity:.9}
+@media(max-width:640px){
+  .stat-row,.best-row,.rgrid{grid-template-columns:1fr 1fr}
+  .modes,.setup-grid,.btn-row{grid-template-columns:1fr}
+  .options{grid-template-columns:1fr}
+  .question{font-size:24px}
+  .feat{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">∑</div>
+      <div>
+        <h1>Speed for Maths — ReAdvanced</h1>
+        <p>Single-app edition • 221 questions • 11.05 mins • offline</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="pill-btn" id="btnLearn">📖 Learn</button>
+      <button class="pill-btn" id="btnHome">🏠 Home</button>
+      <button class="pill-btn" id="btnTheme">🌙</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <section id="screen-home" class="screen active">
+    <div class="card">
+      <div class="hero">
+        <h2>Train calculation speed, the smart way.</h2>
+        <p>ReAdvanced merges all three original quizzes from
+          <b>mohitdhami/Speed-for-Maths</b> into one fast single app — with practice mode,
+          keyboard shortcuts, sounds, best-scores, full review, and cheat-sheet tables.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>221</b><span>total questions</span></div>
+        <div class="stat"><b>11.05</b><span>mins marathon</span></div>
+        <div class="stat"><b>3s</b><span>per question (exam)</span></div>
+        <div class="stat"><b>100%</b><span>offline • 1 file</span></div>
+      </div>
+      <div class="modes">
+        <button class="mode" data-mode="mult">
+          <h3>✖️ Multiplication Tables</h3>
+          <p>Bases 12–30 (excl. 20) × 2–9. Same generator as the original 100-Q quiz.</p>
+          <div class="meta"><span class="tag">100 Q</span><span class="tag">5:00</span><span class="tag">MCQ ×4</span></div>
+          <div class="go">Configure →</div>
+        </button>
+        <button class="mode" data-mode="sq">
+          <h3>▣ Squares, Cubes & 2ⁿ</h3>
+          <p>Squares 2–50, cubes 2–30, powers 2⁴–2¹⁶. Both directions (value ↔ base).</p>
+          <div class="meta"><span class="tag">50 Q</span><span class="tag">2:30</span><span class="tag">6 types</span></div>
+          <div class="go">Configure →</div>
+        </button>
+        <button class="mode" data-mode="conv">
+          <h3>↔️ % ↔ Fraction</h3>
+          <p>All 71 original conversion questions (1/8 … 1/17, 1/7 family, 1/9, 1/11 …).</p>
+          <div class="meta"><span class="tag">71 Q</span><span class="tag">3:33</span><span class="tag">randomized</span></div>
+          <div class="go">Configure →</div>
+        </button>
+        <button class="mode" data-mode="marathon">
+          <h3>🏁 Full Marathon</h3>
+          <p>All 221 questions in one run: 100 mult + 50 squares + 71 conversions. The full 11.05-min test.</p>
+          <div class="meta"><span class="tag">221 Q</span><span class="tag">11:03</span><span class="tag">3 phases</span></div>
+          <div class="go">Configure →</div>
+        </button>
+      </div>
+      <div class="best-row" id="bestRow"></div>
+      <div class="feat">
+        <div><b>⌨️ Keyboard-first</b>Press 1–4 or A–D to answer. Space to pause. Auto-advance in exam mode.</div>
+        <div><b>📊 Real review</b>Every answer is logged. Filter wrong-only, retry only your mistakes.</div>
+        <div><b>🧘 Practice mode</b>Untimed with instant feedback. Exam mode keeps the brutal 3-sec rule.</div>
+      </div>
+      <p class="small" style="margin-top:14px">Sources: Multiplication-Tables-Quiz • Squares-and-Cubes-Quiz • Percentage-to-Fraction-to-Decimal-Quiz • “Speed for Maths.pdf”. Logic ported 1:1, UI rebuilt.</p>
+    </div>
+  </section>
+
+  <!-- SETUP -->
+  <section id="screen-setup" class="screen">
+    <div class="card">
+      <button class="back" data-go="home">← Back</button>
+      <h2 id="setupTitle">Setup</h2>
+      <p class="small" id="setupDesc"></p>
+      <div class="setup-grid">
+        <div class="field">
+          <label>Questions</label>
+          <div class="seg" id="segCount"></div>
+        </div>
+        <div class="field">
+          <label>Seconds per question</label>
+          <div class="seg" id="segSecs"></div>
+        </div>
+        <div class="field">
+          <label>Mode</label>
+          <div class="seg" id="segStyle">
+            <button data-v="exam" class="on">⏱️ Exam (timed)</button>
+            <button data-v="practice">🧘 Practice (untimed)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Extras</label>
+          <div class="seg" id="segExtra">
+            <button data-v="sound" class="on">🔊 Sound</button>
+            <button data-v="shuffle" class="on">🔀 Shuffle options</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn" id="btnStart">Start →</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="hud">
+        <div class="left">
+          <button class="icon-btn" id="btnQuit">✕ Quit</button>
+          <button class="icon-btn" id="btnPause">⏸ Pause</button>
+          <span class="small" id="quizModeLabel"></span>
+        </div>
+        <div class="total-timer" id="totalTimer">00:00</div>
+      </div>
+      <div class="qmeta"><span id="qCounter"></span><span id="liveScore"></span></div>
+      <div class="pbar"><i id="pbar"></i></div>
+      <div class="qbar"><i id="qbar"></i></div>
+      <div class="question" id="qText"></div>
+      <div class="qtag" id="qTag"></div>
+      <div class="options" id="optBox"></div>
+      <div class="feedback" id="qFeedback"></div>
+      <div class="hint" id="quizHint">Press 1–4 to answer • auto-advance is ON in exam mode</div>
+      <div class="btn-row" id="practiceRow" style="display:none">
+        <button class="btn ghost" id="btnSkip">Skip →</button>
+        <button class="btn" id="btnNext" disabled>Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="screen-results" class="screen">
+    <div class="card">
+      <button class="back" data-go="home">← Home</button>
+      <h2>Results</h2>
+      <p class="small" id="resSub"></p>
+      <div class="score-wrap" style="margin-top:12px">
+        <div class="ring" id="ring"><div><span id="resScore">0/0</span></div></div>
+        <div style="flex:1;min-width:220px">
+          <h3 id="resVerdict" style="font-size:20px"></h3>
+          <p class="small" id="resMeta"></p>
+          <p class="small" id="resBest" style="font-weight:800"></p>
+        </div>
+      </div>
+      <div class="rgrid">
+        <div class="rbox"><b id="rCorrect">0</b><span>Correct</span></div>
+        <div class="rbox"><b id="rWrong">0</b><span>Wrong</span></div>
+        <div class="rbox"><b id="rUn">0</b><span>Unanswered</span></div>
+        <div class="rbox"><b id="rAcc">0%</b><span>Accuracy</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnRetryWrong">Retry wrong (<span id="wrongN">0</span>)</button>
+        <button class="btn" id="btnRetry">↻ Retry full</button>
+      </div>
+      <div class="review-tools">
+        <div class="seg" id="segReview">
+          <button data-v="all" class="on">All</button>
+          <button data-v="wrong">Wrong only</button>
+          <button data-v="un">Unanswered</button>
+        </div>
+      </div>
+      <div class="review" id="review"></div>
+    </div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="screen-learn" class="screen">
+    <div class="card">
+      <button class="back" data-go="home">← Home</button>
+      <h2>Learn — cheat sheets</h2>
+      <p class="small">Same tables the quizzes test. Memorize these and the 3-second limit becomes easy.</p>
+      <div class="tabs" id="learnTabs">
+        <button data-t="mult" class="on">✖️ Tables 12–30</button>
+        <button data-t="sq">Squares 2–50</button>
+        <button data-t="cube">Cubes 2–30</button>
+        <button data-t="pow">Powers 2ⁿ</button>
+        <button data-t="conv">% ↔ Fraction</button>
+      </div>
+      <div id="learnBody"></div>
+    </div>
+  </section>
+
+  <footer>Speed for Maths — ReAdvanced • single file • original logic by mohitdhami • built for speed-drilling</footer>
+</div>
+
+<script>
+/* ============ utils ============ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function fmt(s){s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+let AC=null;
+function beep(f=660,d=.08,type='sine',g=.06){
+  if(!state.sound) return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),gn=AC.createGain();
+    o.type=type;o.frequency.value=f;gn.gain.value=g;
+    o.connect(gn);gn.connect(AC.destination);o.start();
+    gn.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);
+    o.stop(AC.currentTime+d);
+  }catch(e){}
+}
+const okBeep=()=>{beep(720,.09);setTimeout(()=>beep(980,.1),90)};
+const noBeep=()=>beep(190,.22,'sawtooth',.05);
+
+/* ============ theme ============ */
+const root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;$('#btnTheme').textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem('sfm_theme',t)}catch(e){}}
+try{setTheme(localStorage.getItem('sfm_theme')||'light')}catch(e){setTheme('light')}
+$('#btnTheme').onclick=()=>setTheme(root.dataset.theme==='dark'?'light':'dark');
+
+/* ============ navigation ============ */
+function go(name){
+  $$('.screen').forEach(s=>s.classList.remove('active'));
+  $('#screen-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#btnHome').onclick=()=>{renderBest();go('home')};
+$('#btnLearn').onclick=()=>{renderLearn('mult');go('learn')};
+$$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+$$('.mode').forEach(b=>b.onclick=()=>openSetup(b.dataset.mode));
+
+/* ============ conversion bank (verbatim from original, 71 Q) ============ */
+const CONV=[
+{q:"What is 1/8 as a percentage?",o:["12.5%","25%","37.5%","6.25%"],a:0},
+{q:"What is 1/4 as a percentage?",o:["12.5%","25%","37.5%","50%"],a:1},
+{q:"What is 3/8 as a percentage?",o:["12.5%","25%","37.5%","62.5%"],a:2},
+{q:"What is 1/2 as a percentage?",o:["25%","50%","75%","100%"],a:1},
+{q:"What is 5/8 as a percentage?",o:["37.5%","50%","62.5%","87.5%"],a:2},
+{q:"What is 3/4 as a percentage?",o:["50%","62.5%","75%","87.5%"],a:2},
+{q:"What is 7/8 as a percentage?",o:["62.5%","75%","87.5%","100%"],a:2},
+{q:"What is 1/11 as a percentage?",o:["9.09%","11.11%","12.5%","14.28%"],a:0},
+{q:"What is 2/11 as a percentage?",o:["18.18%","22.22%","27.27%","33.33%"],a:0},
+{q:"What is 3/11 as a percentage?",o:["18.18%","27.27%","33.33%","45.45%"],a:1},
+{q:"What is 4/11 as a percentage?",o:["27.27%","36.36%","45.45%","54.54%"],a:1},
+{q:"What is 5/11 as a percentage?",o:["27.27%","45.45%","54.54%","63.63%"],a:1},
+{q:"What is 6/11 as a percentage?",o:["45.45%","54.54%","63.63%","72.72%"],a:1},
+{q:"What is 7/11 as a percentage?",o:["54.54%","63.63%","72.72%","81.81%"],a:1},
+{q:"What is 8/11 as a percentage?",o:["63.63%","72.72%","81.81%","90.90%"],a:2},
+{q:"What is 9/11 as a percentage?",o:["72.72%","81.81%","90.90%","99.99%"],a:1},
+{q:"What is 10/11 as a percentage?",o:["18.18%","81.18%","31.31%","90.91%"],a:3},
+{q:"What is 5/12 as a percentage?",o:["47.27%","41.67%","84.54%","13.63%"],a:1},
+{q:"What is 7/12 as a percentage?",o:["47.67%","49.45%","58.33%","63.63%"],a:2},
+{q:"What is 11/12 as a percentage?",o:["71.27%","91.67%","53.53%","12.64%"],a:1},
+{q:"What is 2/5 as a percentage?",o:["60%","40%","30%","20%"],a:1},
+{q:"What is 3/5 as a percentage?",o:["30%","40%","60%","62%"],a:2},
+{q:"What is 4/5 as a percentage?",o:["20%","80%","37.5%","45%"],a:1},
+{q:"What is 5/6 as a percentage?",o:["112.5%","27.35%","37.5%","83.33%"],a:3},
+{q:"What is 3/6 as a percentage?",o:["12.5%","25%",".50%","50%"],a:3},
+{q:"What is 4/6 as a percentage?",o:["72.54%","66.67%","37.5%","62.56%"],a:1},
+{q:"What is 1/9 as a percentage?",o:["9.09%","11.11%","12.5%","14.28%"],a:1},
+{q:"What is 2/9 as a percentage?",o:["18.18%","22.22%","27.27%","33.33%"],a:1},
+{q:"What is 4/9 as a percentage?",o:["36.36%","44.44%","54.54%","66.66%"],a:1},
+{q:"What is 5/9 as a percentage?",o:["44.44%","55.55%","66.66%","77.77%"],a:1},
+{q:"What is 7/9 as a percentage?",o:["66.66%","77.77%","88.88%","99.99%"],a:1},
+{q:"What is 1/7 as a percentage?",o:["12.5%","14.28%","16.66%","9.09%"],a:1},
+{q:"What is 2/7 as a percentage?",o:["22.22%","25%","28.57%","33.33%"],a:2},
+{q:"What is 3/7 as a percentage?",o:["33.33%","42.85%","50%","57.14%"],a:1},
+{q:"What is 4/7 as a percentage?",o:["42.85%","57.14%","66.66%","75%"],a:1},
+{q:"What is 5/7 as a percentage?",o:["57.14%","66.66%","71.42%","83.33%"],a:2},
+{q:"What is 6/7 as a percentage?",o:["85.31%","85.71%","85.51%","85.17%"],a:1},
+{q:"What is 12½% as a fraction?",o:["1/4","1/6","1/8","1/12"],a:2},
+{q:"What is 37½% as a fraction?",o:["3/8","5/8","7/8","1/8"],a:0},
+{q:"What is 62½% as a fraction?",o:["3/8","5/8","7/8","1/8"],a:1},
+{q:"What is 87½% as a fraction?",o:["3/8","5/8","7/8","1/8"],a:2},
+{q:"What is 16⅔% as a fraction?",o:["1/3","1/4","1/6","1/8"],a:2},
+{q:"What is 33⅓% as a fraction?",o:["1/2","1/3","1/4","1/5"],a:1},
+{q:"What is 66⅔% as a fraction?",o:["1/3","2/3","3/4","4/5"],a:1},
+{q:"What is 83⅓% as a fraction?",o:["5/6","4/5","3/4","2/3"],a:0},
+{q:"What is 212½% as a fraction?",o:["17/8","14/5","35/4","16/8"],a:0},
+{q:"What is 116⅔% as a fraction?",o:["11/3","7/4","7/6","7/8"],a:2},
+{q:"What is 128.57% as a fraction?",o:["1/13","17/4","7/6","9/7"],a:3},
+{q:"What is 208.33% as a fraction?",o:["24/13","25/12","26/13","23/12"],a:1},
+{q:"What is 9.09% as a fraction?",o:["1/9","1/10","1/11","1/12"],a:2},
+{q:"What is 11.11% as a fraction?",o:["1/9","1/10","1/11","1/12"],a:0},
+{q:"What is 14.28% as a fraction?",o:["1/6","1/7","1/8","1/9"],a:1},
+{q:"What is 16.66% as a fraction?",o:["1/5","1/6","1/7","1/8"],a:1},
+{q:"What is 28.57% as a fraction?",o:["1/3","2/7","3/8","4/9"],a:1},
+{q:"What is 42.85% as a fraction?",o:["3/7","4/9","5/11","6/13"],a:0},
+{q:"What is 57.14% as a fraction?",o:["3/7","4/7","5/9","6/11"],a:1},
+{q:"What is 71.42% as a fraction?",o:["4/7","5/7","6/9","7/11"],a:1},
+{q:"What is 6.25% as a fraction?",o:["1/12","1/14","1/16","1/18"],a:2},
+{q:"What is 8.33% as a fraction?",o:["1/10","1/11","1/12","1/13"],a:2},
+{q:"What is 18.18% as a fraction?",o:["1/5","2/11","3/16","4/21"],a:1},
+{q:"What is 6.66% as a fraction?",o:["1/15","5/16","2/15","7/13"],a:0},
+{q:"What is 22.22% as a fraction?",o:["1/4","2/9","3/13","4/17"],a:1},
+{q:"What is 44.44% as a fraction?",o:["3/7","4/9","5/11","6/13"],a:1},
+{q:"What is 55.55% as a fraction?",o:["4/7","5/9","6/11","7/13"],a:1},
+{q:"What is 5.55% as a fraction?",o:["4/17","1/19","1/18","4/13"],a:2},
+{q:"What is 77.77% as a fraction?",o:["6/7","7/9","8/11","9/13"],a:1},
+{q:"What is 81.81% as a fraction?",o:["7/9","8/11","9/11","10/13"],a:2},
+{q:"What is 5.88% as a fraction?",o:["1/17","1/13","1/19","1/16"],a:0},
+{q:"What is 4.17% as a fraction?",o:["1/21","12/9","1/24","1/23"],a:2},
+{q:"What is 5.26% as a fraction?",o:["4/17","1/19","6/11","17/13"],a:1},
+{q:"What is 7.69% as a fraction?",o:["4/17","5/13","6/13","1/13"],a:3},
+];
+
+/* ============ generators (ported 1:1 from originals) ============ */
+function wrongMult(base,mult,correct){
+  const s=new Set();
+  let guard=0;
+  while(s.size<3&&guard++<200){
+    let w;const k=Math.floor(Math.random()*3);
+    if(k===0){const m=Math.floor(Math.random()*3)+1;const nb=Math.random()>.5?base+m:base-m;w=nb*mult}
+    else if(k===1){const m=Math.floor(Math.random()*2)+1;const nm=Math.random()>.5?mult+m:mult-m;w=base*nm}
+    else{const d=Math.floor(Math.random()*10)+1;w=Math.random()>.5?correct+d:correct-d}
+    if(w>0&&w!==correct)s.add(w);
+  }
+  return [...s];
+}
+function genMult(n,doShuffle=true){
+  const bases=[];for(let i=12;i<=30;i++)if(i!==20)bases.push(i);
+  const out=[];
+  for(let i=0;i<n;i++){
+    const b=bases[Math.floor(Math.random()*bases.length)];
+    const m=Math.floor(Math.random()*8)+2;
+    const c=b*m;let opts=[c,...wrongMult(b,m,c)];
+    if(doShuffle)opts=shuffle(opts);
+    out.push({prompt:`${b} × ${m} = ?`,options:opts.map(String),correct:opts.indexOf(c),tag:`Tables • ${b}×${m}`});
+  }
+  return out;
+}
+function genOptNum(correct,kind){
+  const opts=[correct];let g=0;
+  while(opts.length<4&&g++<200){
+    let w;
+    if(kind==='sq'){w=correct+Math.floor(Math.random()*41)-20}
+    else if(kind==='cube'){w=correct+Math.floor(Math.random()*101)-50}
+    else if(kind==='pow'){w=correct+Math.floor(Math.random()*41)-20}
+    else{const v=Math.floor(Math.random()*5)+1;w=correct+(Math.random()>.5?v:-v)}
+    if(w>0&&!opts.includes(w))opts.push(w);
+  }
+  return shuffle(opts);
+}
+function genSq(n,doShuffle=true){
+  const pool=[];
+  for(let i=2;i<=50;i++){const v=i*i;const o=genOptNum(v,'sq');pool.push({prompt:`What is the square of ${i}?`,options:o.map(String),correct:o.indexOf(v),tag:'Square'})}
+  for(let i=2;i<=30;i++){const v=i*i*i;const o=genOptNum(v,'cube');pool.push({prompt:`What is the cube of ${i}?`,options:o.map(String),correct:o.indexOf(v),tag:'Cube'})}
+  for(let e=4;e<=16;e++){const v=2**e;const o=genOptNum(v,'pow');pool.push({prompt:`What is 2^${e}?`,options:o.map(String),correct:o.indexOf(v),tag:'Power of 2'})}
+  for(let i=2;i<=50;i++){const o=genOptNum(i,'n');pool.push({prompt:`Which number's square is ${i*i}?`,options:o.map(String),correct:o.indexOf(i),tag:'Square • reverse'})}
+  for(let i=2;i<=30;i++){const o=genOptNum(i,'n');pool.push({prompt:`Which number's cube is ${i*i*i}?`,options:o.map(String),correct:o.indexOf(i),tag:'Cube • reverse'})}
+  for(let e=4;e<=16;e++){const o=genOptNum(e,'n');pool.push({prompt:`2 raised to which power equals ${2**e}?`,options:o.map(String),correct:o.indexOf(e),tag:'Power • reverse'})}
+  shuffle(pool);
+  let q=pool.slice(0,Math.min(n,pool.length));
+  if(!doShuffle){/* keep */ }
+  return q;
+}
+function genConv(n){
+  const p=shuffle([...CONV]).slice(0,Math.min(n,CONV.length));
+  return p.map(c=>({prompt:c.q,options:[...c.o],correct:c.a,tag:'% ↔ Fraction'}));
+}
+
+/* ============ setup state ============ */
+const MODES={
+  mult:{name:'Multiplication Tables',desc:'Bases 12–30 (excl. 20) × 2–9. 4 options. Original: 100 Q in 5:00.',counts:[20,50,100],secs:[3,5,10]},
+  sq:{name:'Squares, Cubes & 2ⁿ',desc:'Squares 2–50, cubes 2–30, powers 2⁴–2¹⁶, both directions. Original: 50 Q in 2:30.',counts:[20,50,80],secs:[3,5,10]},
+  conv:{name:'% ↔ Fraction',desc:'All 71 original conversion questions, randomized. Original: 71 Q in 3:33 (213s).',counts:[20,40,71],secs:[3,5,10]},
+  marathon:{name:'Full Marathon (11.05 min)',desc:'100 multiplication + 50 squares/cubes/powers + 71 conversions = 221 Q. The complete Speed-for-Maths test.',counts:[221],secs:[3]},
+};
+const state={mode:'mult',count:100,secs:3,style:'exam',sound:true,shuffle:true,
+  qs:[],idx:0,score:0,results:[],totalLeft:0,totalTimer:null,qTimer:null,qLeft:0,
+  locked:false,paused:false,reviewFilter:'all',startStamp:0};
+
+function openSetup(mode){
+  state.mode=mode;
+  const m=MODES[mode];
+  $('#setupTitle').textContent=m.name;
+  $('#setupDesc').textContent=m.desc;
+  state.count=m.counts.includes(100)?100:m.counts[m.counts.length-1];
+  if(mode==='mult')state.count=100; if(mode==='sq')state.count=50; if(mode==='conv')state.count=71;
+  state.secs=3; state.style='exam';
+  const sc=$('#segCount');sc.innerHTML='';
+  m.counts.forEach(c=>{const b=document.createElement('button');b.textContent=c+' Q';b.dataset.v=c;if(c===state.count)b.classList.add('on');b.onclick=()=>{state.count=+c;[...sc.children].forEach(x=>x.classList.remove('on'));b.classList.add('on')};sc.appendChild(b)});
+  const ss=$('#segSecs');ss.innerHTML='';
+  m.secs.forEach(c=>{const b=document.createElement('button');b.textContent=c+'s';b.dataset.v=c;if(c===3)b.classList.add('on');b.onclick=()=>{state.secs=+c;[...ss.children].forEach(x=>x.classList.remove('on'));b.classList.add('on')};ss.appendChild(b)});
+  [...$('#segStyle').children].forEach(b=>b.onclick=()=>{state.style=b.dataset.v;[...$('#segStyle').children].forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+  [...$('#segExtra').children].forEach(b=>b.onclick=()=>{b.classList.toggle('on');
+    if(b.dataset.v==='sound')state.sound=b.classList.contains('on');
+    if(b.dataset.v==='shuffle')state.shuffle=b.classList.contains('on');});
+  go('setup');
+}
+$('#btnStart').onclick=()=>startQuiz();
+
+function buildQuestions(mode,count,shuf){
+  if(mode==='mult')return genMult(count,shuf);
+  if(mode==='sq')return genSq(count,shuf);
+  if(mode==='conv')return genConv(count);
+  if(mode==='marathon')return [...genMult(100,shuf).map(q=>({...q,tag:'Marathon ① '+q.tag})),...genSq(50,shuf).map(q=>({...q,tag:'Marathon ② '+q.tag})),...genConv(71).map(q=>({...q,tag:'Marathon ③ '+q.tag}))];
+  return [];
+}
+
+/* ============ quiz run ============ */
+function startQuiz(customQs){
+  state.qs=(Array.isArray(customQs)&&customQs.length?customQs:buildQuestions(state.mode,state.count,state.shuffle));
+  state.idx=0;state.score=0;state.results=[];state.locked=false;state.paused=false;
+  state.totalLeft=state.style==='practice'?0:state.qs.length*state.secs;
+  state.startStamp=Date.now();
+  $('#quizModeLabel').textContent=MODES[state.mode].name+(state.style==='practice'?' • practice':' • exam');
+  $('#quizHint').textContent=state.style==='practice'?'Practice: untimed • instant feedback • use Next/Skip':'Press 1–4 to answer • auto-advance ON • Space to pause';
+  $('#practiceRow').style.display=state.style==='practice'?'grid':'none';
+  $('#btnNext').disabled=true;
+  go('quiz');
+  tickTotal();showQ();
+}
+function tickTotal(){
+  clearInterval(state.totalTimer);
+  const el=$('#totalTimer');
+  const draw=()=>{
+    if(state.style==='practice'){el.textContent='∞';el.className='total-timer';return}
+    el.textContent=fmt(state.totalLeft);
+    el.classList.toggle('warn',state.totalLeft<=60&&state.totalLeft>30);
+    el.classList.toggle('danger',state.totalLeft<=30);
+  };
+  draw();
+  if(state.style==='practice')return;
+  state.totalTimer=setInterval(()=>{
+    if(state.paused)return;
+    state.totalLeft--;
+    draw();
+    if(state.totalLeft<=0){clearInterval(state.totalTimer);endQuiz()}
+  },1000);
+}
+function showQ(){
+  clearInterval(state.qTimer);
+  state.locked=false;state.qLeft=state.secs;
+  const q=state.qs[state.idx];
+  $('#qCounter').textContent=`Question ${state.idx+1} of ${state.qs.length}`;
+  $('#liveScore').textContent=`Score ${state.score}/${state.idx}`;
+  $('#pbar').style.width=((state.idx)/state.qs.length*100)+'%';
+  $('#qText').textContent=q.prompt;
+  $('#qTag').textContent=q.tag||'';
+  $('#qFeedback').textContent='';$('#qFeedback').className='feedback';
+  const box=$('#optBox');box.innerHTML='';
+  // optionally reshuffle display order consistently (already shuffled at build); keep mapping
+  q.options.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';b.innerHTML=`<span class="key">${i+1}</span><span>${t}</span>`;
+    b.onclick=()=>answer(i);
+    box.appendChild(b);
+  });
+  $('#btnNext').disabled=true;
+  const qb=$('#qbar');
+  if(state.style==='practice'){qb.style.display='none';return}
+  qb.style.display='block';
+  const qbarEl=$('#qbar');
+  const step=100;let left=state.secs*1000;
+  qbarEl.style.width='100%';qbarEl.style.background='#22c55e';
+  state.qTimer=setInterval(()=>{
+    if(state.paused)return;
+    left-=step;
+    const frac=Math.max(0,left/(state.secs*1000));
+    qbarEl.style.width=(frac*100)+'%';
+    if(frac<.4)qbarEl.style.background='#f59e0b';
+    if(frac<.2)qbarEl.style.background='#ef4444';
+    if(left<=0){clearInterval(state.qTimer);timeoutQ()}
+  },step);
+}
+function paint(correctIdx,pickedIdx){
+  [...$('#optBox').children].forEach((b,i)=>{
+    b.disabled=true;
+    if(i===correctIdx)b.classList.add('correct');
+    else if(i===pickedIdx)b.classList.add('wrong');
+  });
+}
+function answer(i){
+  if(state.locked||state.paused)return;
+  state.locked=true;clearInterval(state.qTimer);
+  const q=state.qs[state.idx];
+  const good=i===q.correct;
+  paint(q.correct,i);
+  state.results.push({q:q.prompt,opts:q.options,correct:q.correct,picked:i,tag:q.tag,ok:good,un:false});
+  if(good){state.score++;$('#qFeedback').textContent='✓ Correct';$('#qFeedback').className='feedback ok';okBeep()}
+  else{$('#qFeedback').textContent=`✗ Correct: ${q.options[q.correct]}`;$('#qFeedback').className='feedback no';noBeep()}
+  $('#liveScore').textContent=`Score ${state.score}/${state.idx+1}`;
+  $('#pbar').style.width=((state.idx+1)/state.qs.length*100)+'%';
+  if(state.style==='practice'){$('#btnNext').disabled=false;return}
+  setTimeout(next,700);
+}
+function timeoutQ(){
+  if(state.locked)return;
+  state.locked=true;
+  const q=state.qs[state.idx];
+  paint(q.correct,-1);
+  state.results.push({q:q.prompt,opts:q.options,correct:q.correct,picked:-1,tag:q.tag,ok:false,un:true});
+  $('#qFeedback').textContent=`⏰ Time! Answer: ${q.options[q.correct]}`;$('#qFeedback').className='feedback no';
+  noBeep();
+  $('#pbar').style.width=((state.idx+1)/state.qs.length*100)+'%';
+  setTimeout(next,450);
+}
+function next(){
+  if(state.idx+1>=state.qs.length){endQuiz();return}
+  state.idx++;showQ();
+}
+$('#btnNext').onclick=()=>{if(state.locked)next()};
+$('#btnSkip').onclick=()=>{
+  if(state.paused)return;
+  clearInterval(state.qTimer);
+  const q=state.qs[state.idx];
+  state.results.push({q:q.prompt,opts:q.options,correct:q.correct,picked:-1,tag:q.tag,ok:false,un:true});
+  next();
+};
+$('#btnQuit').onclick=()=>{clearInterval(state.totalTimer);clearInterval(state.qTimer);renderBest();go('home')};
+$('#btnPause').onclick=togglePause;
+function togglePause(){
+  if(state.style==='practice')return;
+  state.paused=!state.paused;
+  $('#btnPause').textContent=state.paused?'▶ Resume':'⏸ Pause';
+  $('#qFeedback').textContent=state.paused?'⏸ Paused — press Resume or Space':'';
+}
+document.addEventListener('keydown',e=>{
+  if(!$('#screen-quiz').classList.contains('active'))return;
+  if(e.key===' '){e.preventDefault();togglePause();return}
+  if(state.paused)return;
+  const map={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3,'A':0,'B':1,'C':2,'D':3};
+  if(e.key in map)answer(map[e.key]);
+  if(e.key==='Enter'&&state.style==='practice'&&state.locked)next();
+});
+
+/* ============ results ============ */
+function verdict(p){
+  if(p>=90)return'🏆 Outstanding — lightning fast!';
+  if(p>=75)return'🔥 Great — almost exam-ready.';
+  if(p>=50)return'💪 Fair — drill the Learn tables.';
+  return'🧱 Keep practicing — use Practice mode first.';
+}
+function endQuiz(){
+  clearInterval(state.totalTimer);clearInterval(state.qTimer);
+  // pad unanswered if total timer hit early
+  while(state.results.length<state.qs.length){
+    const q=state.qs[state.results.length];
+    state.results.push({q:q.prompt,opts:q.options,correct:q.correct,picked:-1,tag:q.tag,ok:false,un:true});
+  }
+  const c=state.results.filter(r=>r.ok).length;
+  const u=state.results.filter(r=>r.un).length;
+  const w=state.results.length-c-u;
+  const acc=state.results.length?Math.round(c/state.results.length*100):0;
+  const secs=Math.round((Date.now()-state.startStamp)/1000);
+  $('#resSub').textContent=`${MODES[state.mode].name} • ${state.style} • ${state.qs.length} Q • ${fmt(secs)} taken`;
+  $('#resScore').textContent=`${c}/${state.qs.length}`;
+  $('#ring').style.setProperty('--p',acc+'%');
+  $('#resVerdict').textContent=verdict(acc);
+  $('#resMeta').textContent=`Accuracy ${acc}% • avg ${(secs/Math.max(1,state.qs.length)).toFixed(1)}s/Q`;
+  $('#rCorrect').textContent=c;$('#rWrong').textContent=w;$('#rUn').textContent=u;$('#rAcc').textContent=acc+'%';
+  $('#wrongN').textContent=w+u;
+  // best
+  const key='sfm_best_'+state.mode+'_'+state.style;
+  let prev=null;try{prev=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}
+  if(!prev||c>prev.score){try{localStorage.setItem(key,JSON.stringify({score:c,total:state.qs.length,acc}))}catch(e){}
+    $('#resBest').textContent=`★ New best for ${MODES[state.mode].name}!`;}
+  else{$('#resBest').textContent=`Best: ${prev.score}/${prev.total} (${prev.acc}%)`;}
+  state.reviewFilter='all';
+  [...$('#segReview').children].forEach(x=>x.classList.toggle('on',x.dataset.v==='all'));
+  renderReview();
+  renderBest();
+  go('results');
+}
+[...$('#segReview').children].forEach(b=>b.onclick=()=>{state.reviewFilter=b.dataset.v;[...$('#segReview').children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderReview()});
+function renderReview(){
+  const box=$('#review');box.innerHTML='';
+  const f=state.reviewFilter;
+  state.results.forEach((r,i)=>{
+    if(f==='wrong'&&!( !r.ok&&!r.un))return;
+    if(f==='un'&&!r.un)return;
+    const d=document.createElement('div');d.className='ritem';
+    const yours=r.un?'<span class="bad">unanswered ⏰</span>':(r.ok?`<span class="ok">${r.opts[r.picked]} ✓</span>`:`<span class="bad">${r.opts[r.picked]} ✗</span>`);
+    d.innerHTML=`<b>Q${i+1}.</b> ${r.q} <span style="color:var(--muted)">[${r.tag||''}]</span><br>Yours: ${yours}${(!r.ok)?`<br>Correct: <b>${r.opts[r.correct]}</b>`:''}`;
+    box.appendChild(d);
+  });
+  if(!box.children.length)box.innerHTML='<div class="ritem">Nothing here — nice work! 🎉</div>';
+}
+$('#btnRetry').onclick=()=>startQuiz();
+$('#btnRetryWrong').onclick=()=>{
+  const wrong=state.qs.filter((_,i)=>!state.results[i].ok);
+  if(!wrong.length)return;
+  startQuiz(shuffle([...wrong]));
+};
+
+/* ============ best row ============ */
+function renderBest(){
+  const el=$('#bestRow');if(!el)return;el.innerHTML='';
+  ['mult','sq','conv','marathon'].forEach(m=>{
+    let best=null;try{best=JSON.parse(localStorage.getItem('sfm_best_'+m+'_exam')||'null')}catch(e){}
+    const d=document.createElement('div');d.className='best';
+    d.innerHTML=`<b>${best?best.score+'/'+best.total:'—'}</b>${MODES[m].name.split(' ')[0]} best (exam)`;
+    el.appendChild(d);
+  });
+}
+renderBest();
+
+/* ============ learn ============ */
+$('#learnTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  [...$('#learnTabs').children].forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  renderLearn(b.dataset.t);
+});
+function renderLearn(t){
+  const el=$('#learnBody');
+  if(t==='mult'){
+    let h='<p class="small">Bases 12–30 (no 20) × 2–9. Tap a card topic? Full grid below (base × mult = answer).</p><table class="learn"><tr><th>×</th>';
+    for(let m=2;m<=9;m++)h+=`<th>${m}</th>`;
+    h+='</tr>';
+    for(let b=12;b<=30;b++){if(b===20)continue;h+=`<tr><th>${b}</th>`;for(let m=2;m<=9;m++)h+=`<td>${b*m}</td>`;h+='</tr>'}
+    el.innerHTML=h+'</table>';
+  }else if(t==='sq'){
+    let h='<p class="small">Squares 2–50 — the quiz asks both “what is n²?” and “which n gives this square?”.</p><div class="learn-grid">';
+    for(let i=2;i<=50;i++)h+=`<div class="cell"><b>${i}²</b>${i*i}</div>`;
+    el.innerHTML=h+'</div>';
+  }else if(t==='cube'){
+    let h='<p class="small">Cubes 2–30.</p><div class="learn-grid">';
+    for(let i=2;i<=30;i++)h+=`<div class="cell"><b>${i}³</b>${i*i*i}</div>`;
+    el.innerHTML=h+'</div>';
+  }else if(t==='pow'){
+    let h='<p class="small">Powers of two, 2⁴–2¹⁶.</p><div class="learn-grid">';
+    for(let e=4;e<=16;e++)h+=`<div class="cell"><b>2^${e}</b>${2**e}</div>`;
+    el.innerHTML=h+'</div>';
+  }else{
+    let h='<p class="small">Every % ↔ fraction pair from the 71-Q bank.</p><table class="learn"><tr><th>#</th><th>Question</th><th>Answer</th></tr>';
+    CONV.forEach((c,i)=>{h+=`<tr><td>${i+1}</td><td style="text-align:left">${c.q}</td><td><b>${c.o[c.a]}</b></td></tr>`});
+    el.innerHTML=h+'</table>';
+  }
+}
+</script>
+</body>
+</html>
